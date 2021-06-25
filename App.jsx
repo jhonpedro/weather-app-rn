@@ -5,6 +5,7 @@ import { WHEATHER_API_KEY } from '@env'
 import * as Location from 'expo-location'
 import { RootSiblingParent } from 'react-native-root-siblings'
 import Toast from 'react-native-root-toast'
+import WeatherInfo from './src/components/WeatherInfo'
 
 export default function App() {
 	const [errorMessage, setErrorMessage] = useState('')
@@ -26,7 +27,7 @@ export default function App() {
 
 				const { latitude, longitude } = location.coords
 
-				const requestURL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WHEATHER_API_KEY}`
+				const requestURL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WHEATHER_API_KEY}&units=metric`
 
 				const response = await fetch(requestURL)
 
@@ -41,12 +42,9 @@ export default function App() {
 	}, [])
 
 	if (weather) {
-		const {
-			main: { temp },
-		} = weather
 		return (
 			<View style={styles.container}>
-				<Text>{temp}</Text>
+				<WeatherInfo currentWeather={weather} />
 				<StatusBar style='auto' />
 			</View>
 		)
