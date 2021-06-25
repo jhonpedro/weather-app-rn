@@ -1,10 +1,14 @@
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { WHEATHER_API_KEY } from '@env'
 import * as Location from 'expo-location'
+import { RootSiblingParent } from 'react-native-root-siblings'
+import Toast from 'react-native-root-toast'
 
 export default function App() {
 	const [errorMessage, setErrorMessage] = useState('')
+	const [weather, setWeather] = useState(null)
 
 	useEffect(() => {
 		async function load() {
@@ -22,25 +26,54 @@ export default function App() {
 
 				const { latitude, longitude } = location.coords
 
-				alert(`${latitude} / ${longitude}`)
-			} catch (error) {}
+				const requestURL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WHEATHER_API_KEY}`
+
+				const response = await fetch(requestURL)
+
+				setWeather(await response.json())
+			} catch (error) {
+				Toast.show(error.message, {
+					duration: Toast.durations.LONG,
+				})
+			}
 		}
 		load()
 	}, [])
 
+	if (weather) {
+		const {
+			main: { temp },
+		} = weather
+		return (
+			<View style={styles.container}>
+				<Text>{temp}</Text>
+				<StatusBar style='auto' />
+			</View>
+		)
+	}
+
 	return (
-		<View style={styles.container}>
-			<Text>Hello world!</Text>
-			<StatusBar style='auto' />
-		</View>
+		<RootSiblingParent>
+			<View style={styles.container}>
+				{errorMessage ? (
+					<Text>Oops, something gonne wrong!</Text>
+				) : (
+					<Text>Loading...</Text>
+				)}
+			</View>
+		</RootSiblingParent>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#0ff',
+		backgroundColor: '#f1faee',
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+
+	loading: {
+		flex: 1,
 	},
 })
