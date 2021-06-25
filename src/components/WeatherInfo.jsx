@@ -5,7 +5,7 @@ import colors from '../colors/constants'
 
 const { PRIMARY, SECONDARY } = colors
 
-function WeatherInfo({ currentWeather }) {
+function WeatherInfo({ currentWeather, unitSystem }) {
 	const {
 		sys: { country },
 		main: { temp },
@@ -16,6 +16,8 @@ function WeatherInfo({ currentWeather }) {
 	const { icon, main, description } = details
 	const iconURL = `https://openweathermap.org/img/wn/${icon}@4x.png`
 
+	const unitSystemToDisplay = unitSystem === 'metric' ? '°C' : '°F'
+
 	return (
 		<View style={styles.info}>
 			<Text>
@@ -24,7 +26,7 @@ function WeatherInfo({ currentWeather }) {
 			<Image style={styles.icon} source={{ uri: iconURL }} />
 			<View style={styles.tempContainer}>
 				<Text style={styles.textPrimary}>{temp}</Text>
-				<Text style={styles.textMetric}>°C</Text>
+				<Text style={styles.textMetric}>{unitSystemToDisplay}</Text>
 			</View>
 			<Text style={styles.description}>{description}</Text>
 			<Text style={styles.texSecondary}>{main}</Text>
