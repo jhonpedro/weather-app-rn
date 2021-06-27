@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, StyleSheet, Text, Platform } from 'react-native'
+import { View, StyleSheet, Text, Platform, StatusBar } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
-import { StatusBar } from 'react-native'
 import colors from '../colors/constants'
 
 const { PRIMARY } = colors
@@ -32,7 +31,6 @@ function UnitsPicker({ unitSystem, setUnitSystem }) {
 const styles = StyleSheet.create({
 	pickerContainer: {
 		justifyContent: 'center',
-		position: 'absolute',
 		...Platform.select({
 			ios: {
 				top: 0,
