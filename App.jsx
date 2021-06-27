@@ -8,6 +8,8 @@ import Toast from 'react-native-root-toast'
 import WeatherInfo from './src/components/WeatherInfo'
 import UnitsPicker from './src/components/UnitsPicker'
 import colors from './src/colors/constants'
+import ReloadIcon from './src/components/ReloadIcon'
+import WeatherDetails from './src/components/WeatherDetails'
 
 const { PRIMARY } = colors
 
@@ -17,36 +19,37 @@ export default function App() {
 	const [currentUnitSystem, setCurrentUnitSystem] = useState('metric')
 
 	useEffect(() => {
-		async function load() {
-			setWeather(null)
-			setErrorMessage(null)
-			try {
-				const { status } = await Location.requestForegroundPermissionsAsync()
-
-				if (status !== Location.PermissionStatus.GRANTED) {
-					setErrorMessage('You need to grant permission for your location!')
-					return
-				}
-
-				const location = await Location.getCurrentPositionAsync({
-					accuracy: Location.Accuracy.Low,
-				})
-
-				const { latitude, longitude } = location.coords
-
-				const requestURL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WHEATHER_API_KEY}&units=${currentUnitSystem}`
-
-				const response = await fetch(requestURL)
-
-				setWeather(await response.json())
-			} catch (error) {
-				Toast.show(error.message, {
-					duration: Toast.durations.LONG,
-				})
-			}
-		}
 		load()
 	}, [currentUnitSystem])
+
+	async function load() {
+		setWeather(null)
+		setErrorMessage(null)
+		try {
+			const { status } = await Location.requestForegroundPermissionsAsync()
+
+			if (status !== Location.PermissionStatus.GRANTED) {
+				setErrorMessage('You need to grant permission for your location!')
+				return
+			}
+
+			const location = await Location.getCurrentPositionAsync({
+				accuracy: Location.Accuracy.High,
+			})
+
+			const { latitude, longitude } = location.coords
+
+			const requestURL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WHEATHER_API_KEY}&units=${currentUnitSystem}`
+
+			const response = await fetch(requestURL)
+
+			setWeather(await response.json())
+		} catch (error) {
+			Toast.show(error.message, {
+				duration: Toast.durations.LONG,
+			})
+		}
+	}
 
 	const handleSetCurrentUnitSystem = (newMetric) => {
 		setCurrentUnitSystem(newMetric)
@@ -59,7 +62,12 @@ export default function App() {
 					unitSystem={currentUnitSystem}
 					setUnitSystem={handleSetCurrentUnitSystem}
 				/>
+				<ReloadIcon load={load} />
 				<WeatherInfo currentWeather={weather} unitSystem={currentUnitSystem} />
+				<WeatherDetails
+					currentWeather={weather}
+					unitSystem={currentUnitSystem}
+				/>
 				<StatusBar style='auto' />
 			</View>
 		)
@@ -67,7 +75,7 @@ export default function App() {
 
 	return (
 		<RootSiblingParent>
-			<View style={styles.container}>
+			<View style={styles.loadingContainer}>
 				{errorMessage ? (
 					<Text>Oops, something gonne wrong!</Text>
 				) : (
@@ -84,10 +92,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#f1faee',
 		alignItems: 'center',
-		justifyContent: 'center',
+		justifyContent: 'space-between',
 	},
-
-	loading: {
+	loadingContainer: {
 		flex: 1,
+		justifyContent: 'center',
 	},
 })
