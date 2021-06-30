@@ -9,13 +9,13 @@ import {
 
 import colors from '../colors/constants'
 
-function InputAvoidView() {
+function InputAvoidView({ placeholder, ...rest }) {
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
 		>
 			<Text style={styles.label}>Type your location here:</Text>
-			<TextInput style={styles.input} />
+			<TextInput style={styles.input} placeholder={placeholder} {...rest} />
 		</KeyboardAvoidingView>
 	)
 }
