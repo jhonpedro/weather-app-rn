@@ -3,10 +3,15 @@ import { Text, View, StyleSheet } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 
 import colors from '../colors/constants'
+import { useDispatch } from 'react-redux'
+import { actionMoveSearchToTopAndMakeRequest } from '../store/reducers/search/actions'
 
-function PreviousSearch({ city, state, country, indexInSearch }) {
+function PreviousSearch({ city, state, country, indexInSearch, navigation }) {
+	const dispatch = useDispatch()
+
 	const handleGoToSearch = () => {
-		alert(indexInSearch)
+		dispatch(actionMoveSearchToTopAndMakeRequest(indexInSearch))
+		navigation.navigate('Home')
 	}
 
 	return (
