@@ -18,7 +18,7 @@ import useInput from '../../hooks/useInput'
 import useSearch from '../../store/selectors/useSearch'
 import PreviousSearch from '../../components/PreviousSearch'
 
-function Search() {
+function Search({ navigation }) {
 	const [loading, setLoading] = useState(false)
 	const [location, setLocation, locationIsValid] = useInput(
 		(location) => location.replace(' ', '').split(',').length === 3
@@ -39,6 +39,9 @@ function Search() {
 		dispatch(
 			actionAddSearchRequest({
 				query: location,
+				callbackSuccess: () => {
+					navigation.navigate('Home')
+				},
 				callbackFailure: () => {
 					Alert.alert('Wow!', 'Something went wrong, please try again!')
 				},
