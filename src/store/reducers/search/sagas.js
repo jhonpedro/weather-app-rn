@@ -20,16 +20,20 @@ function* fetchCity(action) {
 			throw new Error()
 		}
 
+		const city = firstResult.components.city ?? firstResult.components.town
+
 		yield put({
 			type: ADD_SEARCH,
 			payload: {
-				city: firstResult.components.town,
+				city,
 				state: firstResult.components.state_code,
 				country: firstResult.components.country,
 				lat: firstResult.geometry.lat,
 				lng: firstResult.geometry.lng,
 			},
 		})
+
+		yield action.payload.callbackSuccess()
 	} catch (error) {
 		yield action.payload.callbackFailure()
 	} finally {
