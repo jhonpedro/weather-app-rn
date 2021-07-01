@@ -22,11 +22,14 @@ function* fetchCity(action) {
 
 		const city = firstResult.components.city ?? firstResult.components.town
 
+		const state =
+			firstResult.components.state_code ?? firstResult.components.state
+
 		yield put({
 			type: ADD_SEARCH,
 			payload: {
 				city,
-				state: firstResult.components.state_code,
+				state,
 				country: firstResult.components.country,
 				lat: firstResult.geometry.lat,
 				lng: firstResult.geometry.lng,
