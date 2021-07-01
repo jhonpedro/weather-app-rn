@@ -84,6 +84,7 @@ function Search({ navigation }) {
 									state={item.state}
 									country={item.country}
 									indexInSearch={index}
+									navigation={navigation}
 								/>
 							))}
 						</View>
