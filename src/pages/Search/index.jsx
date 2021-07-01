@@ -38,7 +38,7 @@ function Search() {
 		setLoading(true)
 		dispatch(
 			actionAddSearchRequest({
-				query: '',
+				query: location,
 				callbackFailure: () => {
 					Alert.alert('Wow!', 'Something went wrong, please try again!')
 				},
@@ -49,37 +49,44 @@ function Search() {
 		)
 	}
 
-	if (loading) {
-		return <Loading />
-	}
-
 	return (
-		<View style={styles.container}>
-			<InputAvoidView
-				placeholder='City,State,Country'
-				value={location}
-				onChangeText={setLocation}
-			/>
-			<View style={styles.buttonsContainer}>
-				<Button label='Submit' onPress={handleSubmit} />
-				<Button>
-					<MaterialIcons name='gps-fixed' size={24} color='white' />
-				</Button>
-			</View>
-			<View>
-				<Text style={styles.previousSearchesText}>Previous Searches</Text>
-				<View>
-					{searchs.items.map((item, index) => (
-						<PreviousSearch
-							key={index}
-							city={item.city}
-							state={item.state}
-							country={item.country}
-							indexInSearch={index}
-						/>
-					))}
-				</View>
-			</View>
+		<View
+			style={{
+				...styles.container,
+				justifyContent: loading ? 'center' : 'flex-start',
+			}}
+		>
+			{loading ? (
+				<Loading />
+			) : (
+				<>
+					<InputAvoidView
+						placeholder='City,State,Country'
+						value={location}
+						onChangeText={setLocation}
+					/>
+					<View style={styles.buttonsContainer}>
+						<Button label='Submit' onPress={handleSubmit} />
+						<Button>
+							<MaterialIcons name='gps-fixed' size={24} color='white' />
+						</Button>
+					</View>
+					<View>
+						<Text style={styles.previousSearchesText}>Previous Searches</Text>
+						<View>
+							{searchs.items.map((item, index) => (
+								<PreviousSearch
+									key={index}
+									city={item.city}
+									state={item.state}
+									country={item.country}
+									indexInSearch={index}
+								/>
+							))}
+						</View>
+					</View>
+				</>
+			)}
 		</View>
 	)
 }
@@ -89,7 +96,6 @@ const currentHeight = Dimensions.get('window').width
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: 'flex-start',
 		paddingHorizontal: currentHeight * 0.05,
 		marginTop: StatusBar.currentHeight,
 	},
@@ -102,11 +108,6 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 		fontSize: 25,
 		fontWeight: 'bold',
-	},
-	loadingContainer: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
 	},
 })
 
