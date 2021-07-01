@@ -10,6 +10,7 @@ import {
 import InputAvoidView from '../../components/InputAvoidView'
 import { useDispatch } from 'react-redux'
 import { MaterialIcons } from '@expo/vector-icons'
+import * as Location from 'expo-location'
 
 import Button from '../../components/Button'
 import { actionAddSearchRequest } from '../../store/reducers/search/actions'
@@ -30,7 +31,7 @@ function Search({ navigation }) {
 		if (!locationIsValid()) {
 			Alert.alert(
 				'Oops',
-				'You have to type in the input following the format: "City,State,Contry"'
+				'You have to type in the input following the format: "City,State,Country"'
 			)
 			return
 		}
@@ -39,6 +40,38 @@ function Search({ navigation }) {
 		dispatch(
 			actionAddSearchRequest({
 				query: location,
+				callbackSuccess: () => {
+					navigation.navigate('Home')
+				},
+				callbackFailure: () => {
+					Alert.alert('Wow!', 'Something went wrong, please try again!')
+				},
+				callbackFinally: () => {
+					setLoading(false)
+				},
+			})
+		)
+	}
+
+	const handleGetCurrentCity = async () => {
+		const { status } = await Location.requestForegroundPermissionsAsync()
+
+		if (status !== Location.PermissionStatus.GRANTED) {
+			Toast.show('You need to provide permissions in settings to the app work!')
+			return false
+		}
+
+		setLoading(true)
+
+		const {
+			coords: { latitude, longitude },
+		} = await Location.getCurrentPositionAsync({
+			accuracy: Location.Accuracy.High,
+		})
+
+		dispatch(
+			actionAddSearchRequest({
+				query: `${latitude}+${longitude}`,
 				callbackSuccess: () => {
 					navigation.navigate('Home')
 				},
@@ -70,7 +103,7 @@ function Search({ navigation }) {
 					/>
 					<View style={styles.buttonsContainer}>
 						<Button label='Submit' onPress={handleSubmit} />
-						<Button>
+						<Button onPress={handleGetCurrentCity}>
 							<MaterialIcons name='gps-fixed' size={24} color='white' />
 						</Button>
 					</View>
