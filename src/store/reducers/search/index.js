@@ -20,6 +20,11 @@ const searchReducer = (state = initial_value, action) => {
 			case ADD_SEARCH: {
 				draft.items.unshift(action.payload)
 				draft.makeRequest = true
+
+				if (draft.items.length > 3) {
+					draft.items.pop()
+				}
+
 				break
 			}
 			case REMOVE_REQUEST: {
