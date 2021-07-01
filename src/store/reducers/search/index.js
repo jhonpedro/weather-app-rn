@@ -1,5 +1,9 @@
 import produce from 'immer'
-import { ADD_SEARCH, REMOVE_REQUEST } from './actionTypes'
+import {
+	ADD_SEARCH,
+	MOVE_SEARCH_TO_TOP_AND_MAKE_REQUEST,
+	REMOVE_REQUEST,
+} from './actionTypes'
 
 const initial_value = {
 	makeRequest: false,
@@ -29,6 +33,12 @@ const searchReducer = (state = initial_value, action) => {
 			}
 			case REMOVE_REQUEST: {
 				draft.makeRequest = false
+				break
+			}
+			case MOVE_SEARCH_TO_TOP_AND_MAKE_REQUEST: {
+				const item = draft.items.splice(action.payload.index, 1)[0]
+				draft.items.unshift(item)
+				draft.makeRequest = true
 				break
 			}
 		}
